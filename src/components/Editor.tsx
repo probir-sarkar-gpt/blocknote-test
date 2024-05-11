@@ -1,5 +1,7 @@
 "use client";
 import { Block } from "@blocknote/core";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { monokai } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { BlockNoteSchema, defaultBlockSpecs, filterSuggestionItems, insertOrUpdateBlock } from "@blocknote/core";
 import "@blocknote/core/fonts/inter.css";
 import {
@@ -55,6 +57,7 @@ const insertImageCrop = (editor: typeof schema.BlockNoteEditor) => ({
 
 export default function App() {
   const [markdown, setMarkdown] = useState<string>("");
+  const [html, setHTML] = useState<string>("");
   // Creates a new editor instance.
   const editor = useCreateBlockNote({
     schema,
@@ -63,10 +66,7 @@ export default function App() {
         type: "paragraph",
         content: "Welcome to this demo!",
       },
-      {
-        type: "alert",
-        content: "This is an example alert",
-      },
+
       {
         type: "paragraph",
         content: "Press the '/' key to open the Slash Menu and add another",
@@ -74,19 +74,14 @@ export default function App() {
       {
         type: "paragraph",
       },
-      {
-        type: "image-crop",
-        props: {
-          url: "https://images.unsplash.com/photo-1713365829670-d8df1e593248?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          caption: "This is an example image",
-        },
-      },
     ],
   });
   const onChange = async () => {
     // Converts the editor's contents from Block objects to Markdown and store to state.
     const markdown = await editor.blocksToMarkdownLossy(editor.document);
     setMarkdown(markdown);
+    const html = await editor.blocksToHTMLLossy(editor.document);
+    setHTML(html);
   };
 
   // Renders the editor instance.
@@ -107,9 +102,25 @@ export default function App() {
       </BlockNoteView>
       <div>Output (Markdown):</div>
       <div className={"item bordered"}>
-        <pre>
-          <code>{markdown}</code>
-        </pre>
+        <SyntaxHighlighter
+          lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
+          wrapLines={true}
+          language="markdown"
+          style={monokai}
+        >
+          {markdown}
+        </SyntaxHighlighter>
+      </div>
+      <div>Output (HTML):</div>
+      <div className="item bordered">
+        <SyntaxHighlighter
+          lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
+          wrapLines={true}
+          language="html"
+          style={monokai}
+        >
+          {html}
+        </SyntaxHighlighter>
       </div>
     </>
   );
