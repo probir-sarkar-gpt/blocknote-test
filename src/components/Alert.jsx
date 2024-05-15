@@ -46,7 +46,7 @@ export const alertTypes = [
       dark: "#208020",
     },
   },
-] as const;
+];
 
 // The Alert block.
 export const Alert = createReactBlockSpec(
@@ -64,9 +64,7 @@ export const Alert = createReactBlockSpec(
   },
   {
     render: (props) => {
-      const alertType = alertTypes.find(
-        (a) => a.value === props.block.props.type
-      )!;
+      const alertType = alertTypes.find((a) => a.value === props.block.props.type);
       const Icon = alertType.icon;
       return (
         <div className={"alert"} data-alert-type={props.block.props.type}>
@@ -74,11 +72,7 @@ export const Alert = createReactBlockSpec(
           <Menu withinPortal={false} zIndex={999999}>
             <Menu.Target>
               <div className={"alert-icon-wrapper"} contentEditable={false}>
-                <Icon
-                  className={"alert-icon"}
-                  data-alert-icon-type={props.block.props.type}
-                  size={32}
-                />
+                <Icon className={"alert-icon"} data-alert-icon-type={props.block.props.type} size={32} />
               </div>
             </Menu.Target>
             {/*Dropdown to change the Alert type*/}
@@ -91,18 +85,14 @@ export const Alert = createReactBlockSpec(
                 return (
                   <Menu.Item
                     key={type.value}
-                    leftSection={
-                      <ItemIcon
-                        className={"alert-icon"}
-                        data-alert-icon-type={type.value}
-                      />
-                    }
+                    leftSection={<ItemIcon className={"alert-icon"} data-alert-icon-type={type.value} />}
                     onClick={() =>
                       props.editor.updateBlock(props.block, {
                         type: "alert",
                         props: { type: type.value },
                       })
-                    }>
+                    }
+                  >
                     {type.title}
                   </Menu.Item>
                 );

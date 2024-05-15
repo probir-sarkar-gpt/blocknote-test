@@ -1,5 +1,4 @@
 "use client";
-import { Block } from "@blocknote/core";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { monokai } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { BlockNoteSchema, defaultBlockSpecs, filterSuggestionItems, insertOrUpdateBlock } from "@blocknote/core";
@@ -12,10 +11,11 @@ import {
 } from "@blocknote/react";
 import "@blocknote/react/style.css";
 
-import { RiAlertFill } from "react-icons/ri";
-import { Alert } from "./Alert";
+import { FaCropSimple } from "react-icons/fa6";
+
 import { ImageCrop } from "./ImageCrop";
 import { useState } from "react";
+import useImageCropper from "./crop/ImageCrop";
 
 // Our schema with block specs, which contain the configs and implementations for blocks
 // that we want our editor to use.
@@ -23,27 +23,12 @@ const schema = BlockNoteSchema.create({
   blockSpecs: {
     // Adds all default blocks.
     ...defaultBlockSpecs,
-    // Adds the Alert block.
-    alert: Alert,
     // Adds the Image Crop block.
     "image-crop": ImageCrop,
   },
 });
 
-// Slash menu item to insert an Alert block
-const insertAlert = (editor: typeof schema.BlockNoteEditor) => ({
-  title: "Alert",
-  onItemClick: () => {
-    insertOrUpdateBlock(editor, {
-      type: "alert",
-    });
-  },
-  aliases: ["alert", "notification", "emphasize", "warning", "error", "info", "success"],
-  group: "Other",
-  icon: <RiAlertFill />,
-});
-
-const insertImageCrop = (editor: typeof schema.BlockNoteEditor) => ({
+const insertImageCrop = (editor) => ({
   title: "Image Crop",
   onItemClick: () => {
     insertOrUpdateBlock(editor, {
@@ -52,12 +37,13 @@ const insertImageCrop = (editor: typeof schema.BlockNoteEditor) => ({
   },
   aliases: ["image", "crop", "picture"],
   group: "Other",
-  icon: <RiAlertFill />,
+  icon: <FaCropSimple />,
 });
 
 export default function App() {
-  const [markdown, setMarkdown] = useState<string>("");
-  const [html, setHTML] = useState<string>("");
+  const [markdown, setMarkdown] = useState("");
+  const [html, setHTML] = useState("");
+  const { CropperDialog } = useImageCropper();
   // Creates a new editor instance.
   const editor = useCreateBlockNote({
     schema,
@@ -87,23 +73,28 @@ export default function App() {
   // Renders the editor instance.
   return (
     <>
-      <BlockNoteView editor={editor} slashMenu={false} onChange={onChange}>
+      <BlockNoteView
+        editor={editor}
+        theme={"light"}
+        slashMenu={false}
+        onChange={onChange}
+        className="border rounded-md"
+      >
         {/* Replaces the default Slash Menu. */}
         <SuggestionMenuController
           triggerCharacter={"/"}
           getItems={async (query) =>
             // Gets all default slash menu items and `insertAlert` item.
-            filterSuggestionItems(
-              [...getDefaultReactSlashMenuItems(editor), insertAlert(editor), insertImageCrop(editor)],
-              query
-            )
+            filterSuggestionItems([...getDefaultReactSlashMenuItems(editor), insertImageCrop(editor)], query)
           }
         />
       </BlockNoteView>
       <div>Output (Markdown):</div>
       <div className={"item bordered"}>
         <SyntaxHighlighter
-          lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
+          lineProps={{
+            style: { wordBreak: "break-all", whiteSpace: "pre-wrap" },
+          }}
           wrapLines={true}
           language="markdown"
           style={monokai}
@@ -114,7 +105,9 @@ export default function App() {
       <div>Output (HTML):</div>
       <div className="item bordered">
         <SyntaxHighlighter
-          lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
+          lineProps={{
+            style: { wordBreak: "break-all", whiteSpace: "pre-wrap" },
+          }}
           wrapLines={true}
           language="html"
           style={monokai}
