@@ -51,18 +51,18 @@ export const ImageCrop = createReactBlockSpec(
         });
       };
       return (
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col w-full relative">
+        <div className="d-flex flex-column gap-2">
+          <div className="position-relative">
             <input
-              className="absolute text-[0] inset-0 w-full h-full opacity-0 cursor-pointer"
+              className="position-absolute top-0 end-0 opacity-0 w-100 h-100"
               type="file"
               onChange={handleFileChange}
               accept="image/*"
             />
             {imageUrl ? (
-              <Image unoptimized width={920} height={200} className="w-full max-w-2xl" alt={alt} src={imageUrl} />
+              <Image unoptimized width={920} height={500} className="w-100 h-100" alt={alt} src={imageUrl} />
             ) : (
-              <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+              <div className="border d-flex align-items-center justify-content-center" style={{ height: "200px" }}>
                 <div className="text-gray-500">Click to upload image</div>
               </div>
             )}

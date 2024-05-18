@@ -15,7 +15,7 @@ const Crop = ({ imageUrl, croppedAreaRef }) => {
       image={imageUrl}
       crop={crop}
       zoom={zoom}
-      aspect={4 / 3}
+      aspect={4 / 2}
       onCropChange={setCrop}
       onCropComplete={onCropComplete}
       onZoomChange={setZoom}

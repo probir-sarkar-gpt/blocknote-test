@@ -60,6 +60,9 @@ export default function App() {
       {
         type: "paragraph",
       },
+      {
+        type: "image-crop",
+      },
     ],
   });
   const onChange = async () => {
@@ -73,13 +76,7 @@ export default function App() {
   // Renders the editor instance.
   return (
     <>
-      <BlockNoteView
-        editor={editor}
-        theme={"light"}
-        slashMenu={false}
-        onChange={onChange}
-        className="border rounded-md"
-      >
+      <BlockNoteView editor={editor} theme={"light"} slashMenu={false} onChange={onChange}>
         {/* Replaces the default Slash Menu. */}
         <SuggestionMenuController
           triggerCharacter={"/"}
